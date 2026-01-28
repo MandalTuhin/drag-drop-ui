@@ -8,6 +8,7 @@ const store = useNodeStore();
 
 const onAdd = (e: any) => {
   const { fromData, toData, fromIndex, toIndex, itemData } = e;
+  console.log('SubContainer onAdd', { fromData, toData, fromIndex, toIndex, itemData });
 
   if (props.container.nodes.length >= props.container.maxCapacity) {
     e.cancel = true;
@@ -15,11 +16,13 @@ const onAdd = (e: any) => {
     return;
   }
 
-  if (fromData === 'nodeGroup') {
+  const isFromSidebar = fromData === 'sidebar';
+
+  if (isFromSidebar && itemData) {
     // This came from the sidebar
     store.addNodeToContainer(props.container.id, itemData, toIndex);
-  } else {
-    // This came from another container
+  } else if (fromData && fromData !== 'sidebar') {
+    // This came from another container (fromData is the containerId)
     store.moveNodeBetweenContainers(fromData, toData, fromIndex, toIndex);
   }
 };
@@ -71,12 +74,12 @@ const removeContainer = () => {
         class="flex flex-col gap-2 min-h-[100px]"
         empty-panel-text="Drop elements here"
       >
-        <NodeItem 
-          v-for="(node, index) in container.nodes" 
-          :key="node.id" 
-          :name="node.label" 
-          class="cursor-grab active:cursor-grabbing"
-        />
+        <div v-for="node in container.nodes" :key="node.id" :data="node">
+          <NodeItem 
+            :name="node.label" 
+            class="cursor-grab active:cursor-grabbing"
+          />
+        </div>
       </DxSortable>
     </div>
   </div>

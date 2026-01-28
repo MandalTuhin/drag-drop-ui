@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useNodeStore } from '@/stores/useNodeStore';
-import { DxDraggable } from 'devextreme-vue/draggable';
+import { DxSortable } from 'devextreme-vue/sortable';
 import NodeItem from './NodeItem.vue';
 
 const store = useNodeStore();
@@ -14,24 +14,30 @@ const store = useNodeStore();
     </div>
     
     <div class="p-4 flex-1 overflow-y-auto">
-      <div class="flex flex-col gap-2">
-        <DxDraggable
+      <DxSortable
+        class="flex flex-col gap-2 h-full"
+        group="nodeGroup"
+        data="sidebar"
+        :allow-reordering="false"
+        drag-direction="both"
+        item-orientation="vertical"
+        :clone="true"
+      >
+        <div
           v-for="node in store.availableNodes"
           :key="node.id"
-          class="item-source"
-          group="nodeGroup"
+          class="sidebar-item"
           :data="node"
-          :clone="true"
         >
           <NodeItem :name="node.label" class="cursor-grab active:cursor-grabbing hover:border-blue-400 transition-colors" />
-        </DxDraggable>
-      </div>
+        </div>
+      </DxSortable>
     </div>
   </aside>
 </template>
 
 <style scoped>
-.item-source {
+.sidebar-item {
   display: block;
 }
 </style>

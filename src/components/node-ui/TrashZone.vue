@@ -7,13 +7,12 @@ const store = useNodeStore();
 const onAdd = (e: any) => {
   const { fromData, fromIndex } = e;
   
-  // If it came from a container, remove it from that container
-  if (fromData !== 'nodeGroup') {
+  // If it came from a container (UUID string), remove it from that container
+  if (fromData && fromData !== 'sidebar') {
     store.removeNode(fromData, fromIndex);
   }
   
-  // If it came from sidebar (nodeGroup), we just do nothing (it wasn't added yet)
-  // or we could explicitly cancel if we don't want to allow dragging from sidebar to trash
+  // Always cancel the add to prevent the trash zone from actually "holding" the item
   e.cancel = true; 
 };
 </script>
