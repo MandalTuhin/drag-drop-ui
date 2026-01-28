@@ -5,7 +5,7 @@ import TrashZone from "./components/node-ui/TrashZone.vue";
 </script>
 
 <template>
-  <div class="flex h-screen w-full overflow-hidden bg-gray-100 font-sans antialiased text-gray-900">
+  <div class="flex h-screen w-full overflow-hidden bg-slate-50 font-sans antialiased text-slate-900">
     <NodeSidebar />
     <WorkSpace />
     <TrashZone />
@@ -19,33 +19,42 @@ html, body, #app {
   padding: 0;
 }
 
-/* DevExtreme Sortable Styles */
+/* Global DevExtreme Sortable Overrides */
 .dx-sortable-dragging {
-  opacity: 0.9;
-  z-index: 10000;
-  transform: scale(1.02);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  opacity: 0.95 !important;
+  z-index: 10000 !important;
+  pointer-events: none !important;
+}
+
+.dx-sortable-dragging .item-wrapper {
+  padding: 0 !important;
+  width: auto !important;
 }
 
 .dx-sortable-placeholder {
-  background-color: rgba(59, 130, 246, 0.05) !important;
-  border: 2px dashed #3b82f6 !important;
-  border-radius: 0.5rem !important;
   visibility: visible !important;
-  min-height: 48px;
+  background-color: transparent !important;
+  position: relative;
 }
 
-/* Ensure placeholder fits in the grid */
-.grid .dx-sortable-placeholder {
-  grid-column: span 1;
-}
-
-/* Improve transition when dragging */
-.item {
-  transition: transform 0.2s ease;
+.dx-sortable-placeholder::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  bottom: 8px;
+  left: 8px;
+  border: 2px dashed #3b82f6;
+  background-color: rgba(59, 130, 246, 0.05);
+  border-radius: 0.5rem;
 }
 
 .dx-sortable-source-hidden {
-  opacity: 0.3;
+  opacity: 0.2 !important;
+}
+
+/* Fix for DevExtreme horizontal drag calculation */
+.dx-sortable {
+  touch-action: none;
 }
 </style>
