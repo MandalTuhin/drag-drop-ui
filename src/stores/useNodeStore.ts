@@ -14,7 +14,13 @@ export interface Container {
 
 export const useNodeStore = defineStore('nodeStore', {
   state: () => ({
-    availableNodes: [] as Node[],
+    availableNodes: [
+      { id: '1', label: 'Input Field' },
+      { id: '2', label: 'Select Box' },
+      { id: '3', label: 'Checkbox' },
+      { id: '4', label: 'Text Area' },
+      { id: '5', label: 'Date Picker' },
+    ] as Node[],
     workspaceContainers: [] as Container[],
   }),
   actions: {
@@ -26,9 +32,49 @@ export const useNodeStore = defineStore('nodeStore', {
         nodes: []
       });
     },
-    // Logic to move nodes between containers
-    moveNode(fromIndex: number, toIndex: number, fromContainerId: string, toContainerId: string) {
-       // Implementation of DevExtreme reorder logic
+    removeContainer(containerId: string) {
+      this.workspaceContainers = this.workspaceContainers.filter(c => c.id !== containerId);
+    },
+    reorderContainers(fromIndex: number, toIndex: number) {
+      const list = [...this.workspaceContainers];
+      const [movedItem] = list.splice(fromIndex, 1);
+      if (movedItem) {
+        list.splice(toIndex, 0, movedItem);
+        this.workspaceContainers = list;
+      }
+    },
+    addNodeToContainer(containerId: string, node: Node, toIndex: number) {
+      const container = this.workspaceContainers.find(c => c.id === containerId);
+      if (container && container.nodes.length < container.maxCapacity) {
+        const newNode = { ...node, id: crypto.randomUUID() };
+        container.nodes.splice(toIndex, 0, newNode);
+        return true;
+      }
+      return false;
+    },
+    moveNodeBetweenContainers(fromContainerId: string, toContainerId: string, fromIndex: number, toIndex: number) {
+      const fromContainer = this.workspaceContainers.find(c => c.id === fromContainerId);
+      const toContainer = this.workspaceContainers.find(c => c.id === toContainerId);
+
+      if (fromContainer && toContainer) {
+        if (fromContainerId === toContainerId) {
+          const [movedNode] = fromContainer.nodes.splice(fromIndex, 1);
+          if (movedNode) {
+            fromContainer.nodes.splice(toIndex, 0, movedNode);
+          }
+        } else if (toContainer.nodes.length < toContainer.maxCapacity) {
+          const [movedNode] = fromContainer.nodes.splice(fromIndex, 1);
+          if (movedNode) {
+            toContainer.nodes.splice(toIndex, 0, movedNode);
+          }
+        }
+      }
+    },
+    removeNode(containerId: string, nodeIndex: number) {
+      const container = this.workspaceContainers.find(c => c.id === containerId);
+      if (container) {
+        container.nodes.splice(nodeIndex, 1);
+      }
     }
   }
 });

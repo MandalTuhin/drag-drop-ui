@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const props = defineProps<{ name?: string }>();
-console.log(props.name);
 </script>
 
 <template>
-  <span class="border border-black p-4">
-    {{ props.name }}
-  </span>
+  <div class="bg-white border border-gray-300 rounded shadow-sm p-3 select-none flex items-center gap-2">
+    <span class="text-gray-400">☰</span>
+    <span class="text-sm font-medium text-gray-700">{{ props.name }}</span>
+  </div>
 </template>
