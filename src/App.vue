@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // import { RouterLink, RouterView } from 'vue-router'
 // import HelloWorld from './components/HelloWorld.vue'
+import NodeSidebar from "./components/node-ui/NodeSidebarSource.vue";
+import WorkSpace from "./components/node-ui/WorkSpace.vue";
 </script>
 
 <template>
@@ -20,40 +22,7 @@
   <RouterView /> -->
 
   <main class="bg-green-300 min-h-screen container mx-auto p-6 flex justify-center gap-8">
-    <section class="border border-black p-4 space-y-6">
-      Nodes Will Exist here...
-      <div class="border border-black p-4">Node 1</div>
-      <div class="border border-black p-4">Node 1</div>
-      <div class="border border-black p-4">Node 1</div>
-      <div class="border border-black p-4">Node 1</div>
-      <div class="border border-black p-4">Node 1</div>
-      <div class="border border-black p-4">Node 1</div>
-      <div></div>
-    </section>
-    <section class="border border-black p-4 space-y-6">
-      you can add sub-containers here and drag nodes and drop here.
-      <div class="border border-black p-4">
-        <h3>Container for things</h3>
-        <section class="flex gap-4">
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-        </section>
-      </div>
-      <div class="border border-black p-4">
-        <h3>Container for things</h3>
-        <section class="flex gap-4">
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-          <span class="border border-black p-4">Node 1</span>
-        </section>
-      </div>
-    </section>
+    <NodeSidebar />
+    <WorkSpace />
   </main>
 </template>
