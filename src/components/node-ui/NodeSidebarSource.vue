@@ -18,6 +18,7 @@ const store = useNodeStore();
         class="flex flex-col gap-2 h-full"
         group="nodeGroup"
         data="sidebar"
+        filter=".item"
         :allow-reordering="false"
         drag-direction="both"
         item-orientation="vertical"
@@ -26,8 +27,8 @@ const store = useNodeStore();
         <div
           v-for="node in store.availableNodes"
           :key="node.id"
-          class="sidebar-item"
-          :data="node"
+          class="item"
+          :data="JSON.stringify(node)"
         >
           <NodeItem :name="node.label" class="cursor-grab active:cursor-grabbing hover:border-blue-400 transition-colors" />
         </div>
@@ -37,7 +38,7 @@ const store = useNodeStore();
 </template>
 
 <style scoped>
-.sidebar-item {
+.item {
   display: block;
 }
 </style>

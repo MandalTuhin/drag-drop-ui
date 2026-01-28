@@ -7,8 +7,17 @@ const props = defineProps<{ container: Container }>();
 const store = useNodeStore();
 
 const onAdd = (e: any) => {
-  const { fromData, toData, fromIndex, toIndex, itemData } = e;
-  console.log('SubContainer onAdd', { fromData, toData, fromIndex, toIndex, itemData });
+  const { fromData, toData, fromIndex, toIndex, itemData, itemElement } = e;
+  
+  // Extract data: DevExtreme might pass it in itemData, or we might need to parse it from the element
+  let nodeData = itemData;
+  if (!nodeData && itemElement && itemElement.getAttribute('data')) {
+    try {
+      nodeData = JSON.parse(itemElement.getAttribute('data'));
+    } catch (err) {
+      console.error("Failed to parse node data", err);
+    }
+  }
 
   if (props.container.nodes.length >= props.container.maxCapacity) {
     e.cancel = true;
@@ -18,11 +27,9 @@ const onAdd = (e: any) => {
 
   const isFromSidebar = fromData === 'sidebar';
 
-  if (isFromSidebar && itemData) {
-    // This came from the sidebar
-    store.addNodeToContainer(props.container.id, itemData, toIndex);
+  if (isFromSidebar && nodeData) {
+    store.addNodeToContainer(props.container.id, nodeData, toIndex);
   } else if (fromData && fromData !== 'sidebar') {
-    // This came from another container (fromData is the containerId)
     store.moveNodeBetweenContainers(fromData, toData, fromIndex, toIndex);
   }
 };
@@ -57,7 +64,6 @@ const removeContainer = () => {
       <button 
         @click="removeContainer"
         class="text-gray-400 hover:text-red-500 transition-colors p-1"
-        title="Remove Container"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -69,12 +75,17 @@ const removeContainer = () => {
       <DxSortable
         group="nodeGroup"
         :data="container.id"
+        filter=".item"
         @add="onAdd"
         @reorder="onReorder"
         class="flex flex-col gap-2 min-h-[100px]"
-        empty-panel-text="Drop elements here"
       >
-        <div v-for="node in container.nodes" :key="node.id" :data="node">
+        <div 
+          v-for="node in container.nodes" 
+          :key="node.id" 
+          class="item" 
+          :data="JSON.stringify(node)"
+        >
           <NodeItem 
             :name="node.label" 
             class="cursor-grab active:cursor-grabbing"
