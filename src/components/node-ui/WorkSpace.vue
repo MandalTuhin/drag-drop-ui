@@ -6,13 +6,13 @@ import SubContainer from './SubContainer.vue';
 
 const store = useNodeStore();
 const newContainerName = ref('');
-const newContainerCapacity = ref(5);
+const newContainerCols = ref(3);
 
 const handleAddContainer = () => {
   if (newContainerName.value.trim()) {
-    store.addContainer(newContainerName.value, newContainerCapacity.value);
+    store.addContainer(newContainerName.value, newContainerCols.value);
     newContainerName.value = '';
-    newContainerCapacity.value = 5;
+    newContainerCols.value = 3;
   }
 };
 
@@ -36,11 +36,12 @@ const onContainerReorder = (e: any) => {
           />
         </div>
         <div class="w-32">
-          <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Max Capacity</label>
+          <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Columns</label>
           <input
-            v-model.number="newContainerCapacity"
+            v-model.number="newContainerCols"
             type="number"
             min="1"
+            max="12"
             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2.5 transition-all"
           />
         </div>

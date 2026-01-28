@@ -8,7 +8,7 @@ export interface Node {
 export interface Container {
   id: string;
   name: string;
-  maxCapacity: number;
+  numCol: number;
   nodes: Node[];
 }
 
@@ -24,13 +24,19 @@ export const useNodeStore = defineStore('nodeStore', {
     workspaceContainers: [] as Container[],
   }),
   actions: {
-    addContainer(name: string, capacity: number) {
+    addContainer(name: string, numCol: number) {
       this.workspaceContainers.push({
         id: crypto.randomUUID(),
         name,
-        maxCapacity: capacity,
+        numCol: numCol > 0 ? numCol : 1,
         nodes: []
       });
+    },
+    updateContainerNumCol(containerId: string, numCol: number) {
+      const container = this.workspaceContainers.find(c => c.id === containerId);
+      if (container) {
+        container.numCol = numCol > 0 ? numCol : 1;
+      }
     },
     removeContainer(containerId: string) {
       this.workspaceContainers = this.workspaceContainers.filter(c => c.id !== containerId);
@@ -45,7 +51,7 @@ export const useNodeStore = defineStore('nodeStore', {
     },
     addNodeToContainer(containerId: string, node: Node, toIndex: number) {
       const container = this.workspaceContainers.find(c => c.id === containerId);
-      if (container && container.nodes.length < container.maxCapacity) {
+      if (container) {
         const newNode = { ...node, id: crypto.randomUUID() };
         container.nodes.splice(toIndex, 0, newNode);
         return true;
@@ -62,7 +68,7 @@ export const useNodeStore = defineStore('nodeStore', {
           if (movedNode) {
             fromContainer.nodes.splice(toIndex, 0, movedNode);
           }
-        } else if (toContainer.nodes.length < toContainer.maxCapacity) {
+        } else {
           const [movedNode] = fromContainer.nodes.splice(fromIndex, 1);
           if (movedNode) {
             toContainer.nodes.splice(toIndex, 0, movedNode);

@@ -9,7 +9,6 @@ const store = useNodeStore();
 const onAdd = (e: any) => {
   const { fromData, toData, fromIndex, toIndex, itemData, itemElement } = e;
   
-  // Extract data: DevExtreme might pass it in itemData, or we might need to parse it from the element
   let nodeData = itemData;
   if (!nodeData && itemElement && itemElement.getAttribute('data')) {
     try {
@@ -17,12 +16,6 @@ const onAdd = (e: any) => {
     } catch (err) {
       console.error("Failed to parse node data", err);
     }
-  }
-
-  if (props.container.nodes.length >= props.container.maxCapacity) {
-    e.cancel = true;
-    alert(`Container "${props.container.name}" is full!`);
-    return;
   }
 
   const isFromSidebar = fromData === 'sidebar';
@@ -42,6 +35,11 @@ const onReorder = (e: any) => {
 const removeContainer = () => {
   store.removeContainer(props.container.id);
 };
+
+const updateCols = (e: Event) => {
+  const val = parseInt((e.target as HTMLInputElement).value);
+  store.updateContainerNumCol(props.container.id, val);
+};
 </script>
 
 <template>
@@ -52,15 +50,20 @@ const removeContainer = () => {
           ⠿
         </div>
         <h3 class="font-bold text-gray-700">{{ container.name }}</h3>
-        <span 
-          :class="[
-            'text-xs px-2 py-0.5 rounded-full font-medium',
-            container.nodes.length >= container.maxCapacity ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
-          ]"
-        >
-          {{ container.nodes.length }} / {{ container.maxCapacity }}
-        </span>
+        
+        <div class="flex items-center gap-2 ml-4">
+          <label class="text-xs font-bold text-gray-400 uppercase">Cols:</label>
+          <input 
+            type="number" 
+            :value="container.numCol" 
+            @input="updateCols"
+            min="1" 
+            max="12"
+            class="w-12 border rounded px-1 text-sm focus:ring-1 focus:ring-blue-500 outline-none"
+          />
+        </div>
       </div>
+      
       <button 
         @click="removeContainer"
         class="text-gray-400 hover:text-red-500 transition-colors p-1"
@@ -78,18 +81,24 @@ const removeContainer = () => {
         filter=".item"
         @add="onAdd"
         @reorder="onReorder"
-        class="flex flex-col gap-2 min-h-[100px]"
+        item-orientation="horizontal"
+        class="min-h-[100px]"
       >
         <div 
-          v-for="node in container.nodes" 
-          :key="node.id" 
-          class="item" 
-          :data="JSON.stringify(node)"
+          class="grid gap-3" 
+          :style="{ gridTemplateColumns: `repeat(${container.numCol}, minmax(0, 1fr))` }"
         >
-          <NodeItem 
-            :name="node.label" 
-            class="cursor-grab active:cursor-grabbing"
-          />
+          <div 
+            v-for="node in container.nodes" 
+            :key="node.id" 
+            class="item" 
+            :data="JSON.stringify(node)"
+          >
+            <NodeItem 
+              :name="node.label" 
+              class="cursor-grab active:cursor-grabbing w-full"
+            />
+          </div>
         </div>
       </DxSortable>
     </div>
