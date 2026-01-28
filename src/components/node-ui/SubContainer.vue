@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useNodeStore, type Container } from '@/stores/useNodeStore';
 import { DxSortable } from 'devextreme-vue/sortable';
 import NodeItem from './NodeItem.vue';
@@ -6,7 +7,10 @@ import NodeItem from './NodeItem.vue';
 const props = defineProps<{ container: Container }>();
 const store = useNodeStore();
 
+const isDragOver = ref(false);
+
 const onAdd = (e: any) => {
+  isDragOver.value = false;
   const { fromData, toData, fromIndex, toIndex, itemData, itemElement } = e;
   
   let nodeData = itemData;
@@ -32,6 +36,16 @@ const onReorder = (e: any) => {
   store.moveNodeBetweenContainers(fromData, toData, fromIndex, toIndex);
 };
 
+const onDragEnter = (e: any) => {
+  if (e.fromData !== props.container.id) {
+    isDragOver.value = true;
+  }
+};
+
+const onDragLeave = () => {
+  isDragOver.value = false;
+};
+
 const removeContainer = () => {
   store.removeContainer(props.container.id);
 };
@@ -43,7 +57,10 @@ const updateCols = (e: Event) => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg border-2 border-gray-200 shadow-sm flex flex-col min-h-[150px]">
+  <div 
+    class="bg-white rounded-lg border-2 transition-all duration-200 shadow-sm flex flex-col min-h-[150px]"
+    :class="[isDragOver ? 'border-blue-400 bg-blue-50/30' : 'border-gray-200']"
+  >
     <div class="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-lg">
       <div class="flex items-center gap-3">
         <div class="container-handle cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600">
@@ -81,26 +98,31 @@ const updateCols = (e: Event) => {
         filter=".item"
         @add="onAdd"
         @reorder="onReorder"
-        item-orientation="horizontal"
-        class="min-h-[100px]"
+        @drag-enter="onDragEnter"
+        @drag-leave="onDragLeave"
+        item-orientation="vertical"
+        class="min-h-[100px] grid gap-3"
+        :style="{ gridTemplateColumns: `repeat(${container.numCol}, minmax(0, 1fr))` }"
       >
         <div 
-          class="grid gap-3" 
-          :style="{ gridTemplateColumns: `repeat(${container.numCol}, minmax(0, 1fr))` }"
+          v-for="node in container.nodes" 
+          :key="node.id" 
+          class="item" 
+          :data="JSON.stringify(node)"
         >
-          <div 
-            v-for="node in container.nodes" 
-            :key="node.id" 
-            class="item" 
-            :data="JSON.stringify(node)"
-          >
-            <NodeItem 
-              :name="node.label" 
-              class="cursor-grab active:cursor-grabbing w-full"
-            />
-          </div>
+          <NodeItem 
+            :name="node.label" 
+            class="cursor-grab active:cursor-grabbing w-full h-full block"
+          />
         </div>
       </DxSortable>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Ensure the sortable container itself is the grid */
+:deep(.dx-sortable) {
+  display: grid !important;
+}
+</style>
