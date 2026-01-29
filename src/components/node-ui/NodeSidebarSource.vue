@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import { useNodeStore, type Node, AVAILABLE_NODES } from '@/stores/useNodeStore';
+import { useNodeStore, type Node } from '@/stores/useNodeStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import NodeItem from './NodeItem.vue';
 
 const store = useNodeStore();
-
-const cloneNode = (element: Node) => {
-  return {
-    ...element,
-    id: crypto.randomUUID(),
-  };
-};
 </script>
 
 <template>
@@ -22,15 +15,13 @@ const cloneNode = (element: Node) => {
 
     <div class="p-4 flex-1 overflow-y-auto">
       <VueDraggable
-        :model-value="AVAILABLE_NODES"
+        v-model="store.availableNodes"
         class="flex flex-col gap-2 h-full"
-        :group="{ name: 'nodeGroup', pull: 'clone', put: false }"
-        :sort="false"
-        :clone="cloneNode"
+        :group="{ name: 'nodeGroup', pull: true, put: true }"
         :animation="150"
       >
         <div
-          v-for="node in AVAILABLE_NODES"
+          v-for="node in store.availableNodes"
           :key="node.id"
           class="block item cursor-grab active:cursor-grabbing"
         >
