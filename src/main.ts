@@ -1,4 +1,3 @@
-import "devextreme/dist/css/dx.light.css";
 import "./style.css";
 
 import { createApp } from "vue";

@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { useNodeStore } from '@/stores/useNodeStore';
-import { DxSortable } from 'devextreme-vue/sortable';
+import { useNodeStore, type Node } from '@/stores/useNodeStore';
+import { VueDraggable } from 'vue-draggable-plus';
 import NodeItem from './NodeItem.vue';
 
 const store = useNodeStore();
+
+const cloneNode = (element: Node) => {
+  return {
+    ...element,
+    id: crypto.randomUUID(),
+  };
+};
 </script>
 
 <template>
@@ -14,25 +21,22 @@ const store = useNodeStore();
     </div>
     
     <div class="p-4 flex-1 overflow-y-auto">
-      <DxSortable
+      <VueDraggable
+        v-model="store.availableNodes"
         class="flex flex-col gap-2 h-full"
-        group="nodeGroup"
-        data="sidebar"
-        filter=".item"
-        :allow-reordering="false"
-        drag-direction="both"
-        item-orientation="vertical"
-        :clone="true"
+        :group="{ name: 'nodeGroup', pull: 'clone', put: false }"
+        :sort="false"
+        :clone="cloneNode"
+        :animation="150"
       >
         <div
           v-for="node in store.availableNodes"
           :key="node.id"
-          class="item"
-          :data="JSON.stringify(node)"
+          class="item cursor-grab active:cursor-grabbing"
         >
-          <NodeItem :name="node.label" class="cursor-grab active:cursor-grabbing hover:border-blue-400 transition-colors" />
+          <NodeItem :name="node.label" class="hover:border-blue-400 transition-colors" />
         </div>
-      </DxSortable>
+      </VueDraggable>
     </div>
   </aside>
 </template>

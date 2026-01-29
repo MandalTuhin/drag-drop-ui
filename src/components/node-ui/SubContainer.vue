@@ -1,55 +1,22 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useNodeStore, type Container } from '@/stores/useNodeStore';
-import { DxSortable } from 'devextreme-vue/sortable';
+import { VueDraggable } from 'vue-draggable-plus';
 import NodeItem from './NodeItem.vue';
 
 const props = defineProps<{ container: Container }>();
 const store = useNodeStore();
 
-const isDragOver = ref(false);
+const nodes = computed({
+  get: () => props.container.nodes,
+  set: (val) => {
+    store.updateContainerNodes(props.container.id, val);
+  },
+});
 
 const itemWidth = computed(() => {
   return `${100 / props.container.numCol}%`;
 });
-
-const onAdd = (e: any) => {
-  isDragOver.value = false;
-  const { fromData, toData, fromIndex, toIndex, itemData, itemElement } = e;
-  
-  let nodeData = itemData;
-  if (!nodeData && itemElement) {
-    const dataAttr = itemElement.getAttribute('data');
-    if (dataAttr) {
-      try {
-        nodeData = JSON.parse(dataAttr);
-      } catch (err) {
-        console.error("Failed to parse node data", err);
-      }
-    }
-  }
-
-  if (fromData === 'sidebar' && nodeData) {
-    store.addNodeToContainer(props.container.id, nodeData, toIndex);
-  } else if (fromData && fromData !== 'sidebar') {
-    store.moveNodeBetweenContainers(fromData, toData, fromIndex, toIndex);
-  }
-};
-
-const onReorder = (e: any) => {
-  const { fromData, toData, fromIndex, toIndex } = e;
-  store.moveNodeBetweenContainers(fromData, toData, fromIndex, toIndex);
-};
-
-const onDragEnter = (e: any) => {
-  if (e.fromData !== props.container.id) {
-    isDragOver.value = true;
-  }
-};
-
-const onDragLeave = () => {
-  isDragOver.value = false;
-};
 
 const removeContainer = () => {
   store.removeContainer(props.container.id);
@@ -64,9 +31,8 @@ const updateCols = (e: Event) => {
 </script>
 
 <template>
-  <div 
-    class="bg-white rounded-xl border-2 transition-all duration-300 shadow-sm flex flex-col min-h-[160px]"
-    :class="[isDragOver ? 'border-blue-500 ring-4 ring-blue-50 bg-blue-50/20' : 'border-gray-200']"
+  <div
+    class="bg-white rounded-xl border-2 transition-all duration-300 shadow-sm flex flex-col min-h-[160px] border-gray-200"
   >
     <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-xl">
       <div class="flex items-center gap-4">
@@ -76,21 +42,21 @@ const updateCols = (e: Event) => {
           </svg>
         </div>
         <h3 class="font-bold text-gray-800 tracking-tight">{{ container.name }}</h3>
-        
+
         <div class="flex items-center gap-2 px-3 py-1 bg-white border border-gray-200 rounded-lg shadow-sm">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-tighter">Columns</label>
-          <input 
-            type="number" 
-            :value="container.numCol" 
+          <input
+            type="number"
+            :value="container.numCol"
             @input="updateCols"
-            min="1" 
+            min="1"
             max="12"
             class="w-10 text-center font-bold text-blue-600 bg-transparent outline-none"
           />
         </div>
       </div>
-      
-      <button 
+
+      <button
         @click="removeContainer"
         class="text-gray-300 hover:text-red-500 transition-all p-1.5 hover:bg-red-50 rounded-lg"
       >
@@ -101,40 +67,52 @@ const updateCols = (e: Event) => {
     </div>
 
     <div class="p-2 flex-1">
-      <DxSortable
+      <VueDraggable
+        v-model="nodes"
         group="nodeGroup"
-        :data="container.id"
-        filter=".item-wrapper"
-        @add="onAdd"
-        @reorder="onReorder"
-        @drag-enter="onDragEnter"
-        @drag-leave="onDragLeave"
-        item-orientation="horizontal"
-        class="sortable-container flex flex-wrap min-h-[120px] content-start"
+        ghost-class="ghost"
+        chosen-class="chosen"
+        :animation="250"
+        class="flex flex-wrap min-h-[120px] content-start sortable-container"
       >
-        <div 
-          v-for="node in container.nodes" 
-          :key="node.id" 
-          class="item-wrapper p-2" 
-          :style="{ width: itemWidth }"
-          :data="JSON.stringify(node)"
-        >
-          <NodeItem :name="node.label" />
-        </div>
-      </DxSortable>
+        <TransitionGroup type="transition" name="list">
+          <div
+            v-for="node in nodes"
+            :key="node.id"
+            class="item-wrapper p-2"
+            :style="{ width: itemWidth }"
+          >
+            <NodeItem :name="node.label" />
+          </div>
+        </TransitionGroup>
+      </VueDraggable>
     </div>
   </div>
 </template>
 
 <style scoped>
-.sortable-container {
-  display: flex !important;
-  flex-wrap: wrap !important;
+.ghost {
+  opacity: 0;
 }
 
-:deep(.dx-sortable-placeholder) {
-  width: v-bind(itemWidth) !important;
-  height: 64px !important; /* matches item height + padding */
-  padding: 8px !important;
+.chosen {
+  opacity: 1;
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.3s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+/* Ensure ghost item doesn't affect layout weirdly */
+.ghost > * {
+  visibility: hidden;
 }
 </style>
