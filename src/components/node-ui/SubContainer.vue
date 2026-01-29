@@ -40,6 +40,3 @@ const updateCols = (value: number) => {
     />
   </div>
 </template>
-
-
-

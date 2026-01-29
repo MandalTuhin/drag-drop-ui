@@ -10,9 +10,15 @@ const store = useNodeStore();
 const indicatorIndex = ref<number | null>(null);
 const indicatorSide = ref<'top' | 'bottom'>('top');
 
-const onMove = (e: any) => {
+interface DraggableMoveEvent {
+  relatedContext: { index: number | null | undefined };
+  related: Element & { getBoundingClientRect: () => DOMRect };
+  originalEvent: { clientY: number };
+}
+
+const onMove = (e: DraggableMoveEvent) => {
   const { relatedContext } = e;
-  indicatorIndex.value = relatedContext.index;
+  indicatorIndex.value = relatedContext.index ?? null;
 
   const rect = e.related.getBoundingClientRect();
   const mouseY = e.originalEvent.clientY;
