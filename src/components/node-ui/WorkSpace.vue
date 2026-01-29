@@ -35,7 +35,7 @@ const onEnd = () => {
       class="flex flex-col gap-4 relative"
       handle=".container-handle"
       :animation="250"
-      ghost-class="ghost"
+      ghost-class="opacity-30"
       :move="onMove"
       @end="onEnd"
       @drag-leave="onEnd"
@@ -51,10 +51,4 @@ const onEnd = () => {
     </VueDraggable>
   </div>
 </template>
-
-<style scoped>
-.ghost {
-  opacity: 0.3;
-}
-</style>
 
