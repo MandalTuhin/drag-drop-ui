@@ -21,6 +21,7 @@ export const useNodeStore = defineStore('nodeStore', {
       { id: '3', label: 'Checkbox' },
       { id: '4', label: 'Text Area' },
       { id: '5', label: 'Date Picker' },
+      { id: 'spacer', label: '[ || ]' },
     ] as Node[],
   }),
   actions: {
