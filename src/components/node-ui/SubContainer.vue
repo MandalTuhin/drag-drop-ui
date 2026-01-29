@@ -24,21 +24,21 @@ const isDraggingOverEmpty = ref(false);
 
 const onMove = (e: any) => {
   const { relatedContext, to } = e;
-  
+
   isDraggingOverEmpty.value = false;
-  
+
   if (to.classList.contains('sortable-container')) {
     if (relatedContext.list.length === 0) {
       isDraggingOverEmpty.value = true;
       indicatorIndex.value = null;
     } else {
       indicatorIndex.value = relatedContext.index;
-      
+
       // Determine if we are on the left or right half of the target element
       const rect = e.related.getBoundingClientRect();
       const mouseX = e.originalEvent.clientX;
       const midX = rect.left + rect.width / 2;
-      
+
       indicatorSide.value = mouseX > midX ? 'right' : 'left';
     }
   }
@@ -106,21 +106,21 @@ const updateCols = (e: Event) => {
 
     <div class="p-2 flex-1 relative">
       <!-- Indicator for Empty Container -->
-      <div 
-        v-if="isDraggingOverEmpty" 
-        class="absolute inset-x-4 top-1/2 -translate-y-1/2 h-1 bg-blue-500 rounded-full z-50"
+      <div
+        v-if="isDraggingOverEmpty"
+        class="absolute inset-x-4 top-1/2 -translate-y-1/2 h-1 bg-green-500 rounded-full z-50"
       ></div>
 
       <VueDraggable
         v-model="nodes"
         group="nodeGroup"
-        ghost-class="ghost"
-        chosen-class="chosen"
+        ghost-class="opacity-30"
+        chosen-class="opacity-50"
         :animation="250"
         :move="onMove"
         @end="onEnd"
         @drag-leave="onDragLeave"
-        class="flex flex-wrap min-h-[120px] content-start sortable-container"
+        class="flex flex-wrap min-h-[120px] content-start sortable-container transition-all duration-300 ease-in-out"
       >
         <div
           v-for="(node, index) in nodes"
@@ -129,9 +129,9 @@ const updateCols = (e: Event) => {
           :style="{ width: itemWidth }"
         >
           <!-- Insertion Indicator -->
-          <div 
-            v-if="indicatorIndex === index" 
-            class="absolute top-2 bottom-2 w-1 bg-blue-500 z-50 rounded-full transition-all"
+          <div
+            v-if="indicatorIndex === index"
+            class="absolute top-2 bottom-2 w-1 bg-green-500 z-50 rounded-full transition-all"
             :class="[indicatorSide === 'left' ? 'left-0' : 'right-0']"
           ></div>
 
@@ -143,14 +143,7 @@ const updateCols = (e: Event) => {
 </template>
 
 <style scoped>
-.ghost {
-  opacity: 0.3;
-}
-
-.chosen {
-  opacity: 0.5;
-}
-
+/* Removed ghost and chosen classes as they're now inline in the template */
 .sortable-container {
   /* Ensure smooth reordering when the item is finally dropped */
   transition: all 0.3s ease;
@@ -160,3 +153,6 @@ const updateCols = (e: Event) => {
   opacity: 1 !important;
 }
 </style>
+
+
+
