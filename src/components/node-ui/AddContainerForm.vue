@@ -7,16 +7,25 @@ const newContainerName = ref('');
 const errorMessage = ref('');
 
 const handleAddContainer = () => {
-  if (!newContainerName.value.trim()) {
+  const name = newContainerName.value.trim();
+  if (!name) {
     errorMessage.value = 'Container name is required';
     return;
   }
 
-  store.addContainer(newContainerName.value);
+  const isDuplicate = store.workspaceContainers.some(
+    (c) => c.name.toLowerCase() === name.toLowerCase()
+  );
+
+  if (isDuplicate) {
+    errorMessage.value = 'A container with this name already exists';
+    return;
+  }
+  
+  store.addContainer(name);
   newContainerName.value = '';
   errorMessage.value = '';
 };
-
 // Clear error when user starts typing
 watch(newContainerName, () => {
   if (errorMessage.value) errorMessage.value = '';
