@@ -46,6 +46,10 @@ export const useNodeStore = defineStore('nodeStore', {
     },
     removeContainer(containerId: string) {
       this.workspaceContainers = this.workspaceContainers.filter(c => c.id !== containerId);
+    },
+    isContainerNameUnique(name: string): boolean {
+      const normalizedName = name.trim().toLowerCase();
+      return !this.workspaceContainers.some(c => c.name.toLowerCase() === normalizedName);
     }
   }
 });

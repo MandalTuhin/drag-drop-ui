@@ -13,11 +13,7 @@ const handleAddContainer = () => {
     return;
   }
 
-  const isDuplicate = store.workspaceContainers.some(
-    (c) => c.name.toLowerCase() === name.toLowerCase()
-  );
-
-  if (isDuplicate) {
+  if (!store.isContainerNameUnique(name)) {
     errorMessage.value = 'A container with this name already exists';
     return;
   }
