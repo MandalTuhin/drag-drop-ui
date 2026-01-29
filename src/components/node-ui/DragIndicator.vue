@@ -8,7 +8,7 @@ defineProps<{
 <template>
   <div
     v-if="index !== null"
-    class="absolute left-8 right-0 h-1 bg-yellow-500 z-50 rounded-full"
+    class="absolute left-0 right-0 h-1 bg-yellow-500 z-50 rounded-full"
     :class="[side === 'top' ? '-top-2' : '-bottom-2']"
-  >Hello</div>
+  ></div>
 </template>

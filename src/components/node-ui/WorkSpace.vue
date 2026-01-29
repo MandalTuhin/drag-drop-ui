@@ -49,10 +49,7 @@ const onEnd = () => {
       <div v-for="(container, index) in store.workspaceContainers" :key="container.id" class="relative">
         <!-- Horizontal Indicator -->
         <DragIndicator :index="indicatorIndex === index ? index : null" :side="indicatorSide" />
-        <div class="container-handle absolute left-2 top-4 cursor-grab active:cursor-grabbing p-1 text-gray-400 z-10">
-          ⠿
-        </div>
-        <SubContainer :container="container" class="ml-8" />
+        <SubContainer :container="container" />
       </div>
     </VueDraggable>
   </div>
