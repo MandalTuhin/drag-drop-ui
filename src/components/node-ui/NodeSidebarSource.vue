@@ -19,7 +19,7 @@ const cloneNode = (element: Node) => {
       <h2 class="text-lg font-bold text-gray-800">Available Elements</h2>
       <p class="text-xs text-gray-500 mt-1">Drag elements to the workspace</p>
     </div>
-    
+
     <div class="p-4 flex-1 overflow-y-auto">
       <VueDraggable
         v-model="store.availableNodes"
@@ -32,7 +32,7 @@ const cloneNode = (element: Node) => {
         <div
           v-for="node in store.availableNodes"
           :key="node.id"
-          class="item cursor-grab active:cursor-grabbing"
+          class="block item cursor-grab active:cursor-grabbing"
         >
           <NodeItem :name="node.label" class="hover:border-blue-400 transition-colors" />
         </div>
@@ -40,9 +40,3 @@ const cloneNode = (element: Node) => {
     </div>
   </aside>
 </template>
-
-<style scoped>
-.item {
-  display: block;
-}
-</style>

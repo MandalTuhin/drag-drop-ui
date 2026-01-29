@@ -14,6 +14,25 @@ const handleAddContainer = () => {
     newContainerName.value = '';
   }
 };
+
+const indicatorIndex = ref<number | null>(null);
+const indicatorSide = ref<'top' | 'bottom'>('top');
+
+const onMove = (e: any) => {
+  const { relatedContext } = e;
+  indicatorIndex.value = relatedContext.index;
+  
+  const rect = e.related.getBoundingClientRect();
+  const mouseY = e.originalEvent.clientY;
+  const midY = rect.top + rect.height / 2;
+  
+  indicatorSide.value = mouseY > midY ? 'bottom' : 'top';
+  return false;
+};
+
+const onEnd = () => {
+  indicatorIndex.value = null;
+};
 </script>
 
 <template>
@@ -46,19 +65,27 @@ const handleAddContainer = () => {
 
     <VueDraggable
       v-model="store.workspaceContainers"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-4 relative"
       handle=".container-handle"
       :animation="250"
       ghost-class="ghost"
+      :move="onMove"
+      @end="onEnd"
+      @drag-leave="onEnd"
     >
-      <TransitionGroup type="transition" name="fade">
-        <div v-for="container in store.workspaceContainers" :key="container.id" class="relative">
-          <div class="container-handle absolute left-2 top-4 cursor-grab active:cursor-grabbing p-1 text-gray-400 z-10">
-            ⠿
-          </div>
-          <SubContainer :container="container" class="ml-8" />
+      <div v-for="(container, index) in store.workspaceContainers" :key="container.id" class="relative">
+        <!-- Horizontal Indicator -->
+        <div 
+          v-if="indicatorIndex === index" 
+          class="absolute left-8 right-0 h-1 bg-blue-500 z-50 rounded-full"
+          :class="[indicatorSide === 'top' ? '-top-2' : '-bottom-2']"
+        ></div>
+
+        <div class="container-handle absolute left-2 top-4 cursor-grab active:cursor-grabbing p-1 text-gray-400 z-10">
+          ⠿
         </div>
-      </TransitionGroup>
+        <SubContainer :container="container" class="ml-8" />
+      </div>
     </VueDraggable>
   </div>
 </template>
@@ -66,18 +93,5 @@ const handleAddContainer = () => {
 <style scoped>
 .ghost {
   opacity: 0.3;
-  background: #f7fafc;
-}
-
-.fade-move,
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
 }
 </style>

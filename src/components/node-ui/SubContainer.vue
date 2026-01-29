@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useNodeStore, type Container } from '@/stores/useNodeStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import NodeItem from './NodeItem.vue';
@@ -18,6 +18,43 @@ const itemWidth = computed(() => {
   return `${100 / props.container.numCol}%`;
 });
 
+const indicatorIndex = ref<number | null>(null);
+const indicatorSide = ref<'left' | 'right'>('left');
+const isDraggingOverEmpty = ref(false);
+
+const onMove = (e: any) => {
+  const { relatedContext, to } = e;
+  
+  isDraggingOverEmpty.value = false;
+  
+  if (to.classList.contains('sortable-container')) {
+    if (relatedContext.list.length === 0) {
+      isDraggingOverEmpty.value = true;
+      indicatorIndex.value = null;
+    } else {
+      indicatorIndex.value = relatedContext.index;
+      
+      // Determine if we are on the left or right half of the target element
+      const rect = e.related.getBoundingClientRect();
+      const mouseX = e.originalEvent.clientX;
+      const midX = rect.left + rect.width / 2;
+      
+      indicatorSide.value = mouseX > midX ? 'right' : 'left';
+    }
+  }
+  return false; // Prevent default SortableJS sorting
+};
+
+const onEnd = () => {
+  indicatorIndex.value = null;
+  isDraggingOverEmpty.value = false;
+};
+
+const onDragLeave = () => {
+  indicatorIndex.value = null;
+  isDraggingOverEmpty.value = false;
+};
+
 const removeContainer = () => {
   store.removeContainer(props.container.id);
 };
@@ -33,6 +70,7 @@ const updateCols = (e: Event) => {
 <template>
   <div
     class="bg-white rounded-xl border-2 transition-all duration-300 shadow-sm flex flex-col min-h-[160px] border-gray-200"
+    :class="{ 'ring-2 ring-blue-100 border-blue-200': isDraggingOverEmpty }"
   >
     <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-xl">
       <div class="flex items-center gap-4">
@@ -66,25 +104,39 @@ const updateCols = (e: Event) => {
       </button>
     </div>
 
-    <div class="p-2 flex-1">
+    <div class="p-2 flex-1 relative">
+      <!-- Indicator for Empty Container -->
+      <div 
+        v-if="isDraggingOverEmpty" 
+        class="absolute inset-x-4 top-1/2 -translate-y-1/2 h-1 bg-blue-500 rounded-full z-50"
+      ></div>
+
       <VueDraggable
         v-model="nodes"
         group="nodeGroup"
         ghost-class="ghost"
         chosen-class="chosen"
         :animation="250"
+        :move="onMove"
+        @end="onEnd"
+        @drag-leave="onDragLeave"
         class="flex flex-wrap min-h-[120px] content-start sortable-container"
       >
-        <TransitionGroup type="transition" name="list">
-          <div
-            v-for="node in nodes"
-            :key="node.id"
-            class="item-wrapper p-2"
-            :style="{ width: itemWidth }"
-          >
-            <NodeItem :name="node.label" />
-          </div>
-        </TransitionGroup>
+        <div
+          v-for="(node, index) in nodes"
+          :key="node.id"
+          class="item-wrapper p-2 relative"
+          :style="{ width: itemWidth }"
+        >
+          <!-- Insertion Indicator -->
+          <div 
+            v-if="indicatorIndex === index" 
+            class="absolute top-2 bottom-2 w-1 bg-blue-500 z-50 rounded-full transition-all"
+            :class="[indicatorSide === 'left' ? 'left-0' : 'right-0']"
+          ></div>
+
+          <NodeItem :name="node.label" />
+        </div>
       </VueDraggable>
     </div>
   </div>
@@ -92,27 +144,19 @@ const updateCols = (e: Event) => {
 
 <style scoped>
 .ghost {
-  opacity: 0;
+  opacity: 0.3;
 }
 
 .chosen {
-  opacity: 1;
+  opacity: 0.5;
 }
 
-.list-move,
-.list-enter-active,
-.list-leave-active {
+.sortable-container {
+  /* Ensure smooth reordering when the item is finally dropped */
   transition: all 0.3s ease;
 }
 
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: scale(0.9);
-}
-
-/* Ensure ghost item doesn't affect layout weirdly */
-.ghost > * {
-  visibility: hidden;
+:deep(.sortable-fallback) {
+  opacity: 1 !important;
 }
 </style>
