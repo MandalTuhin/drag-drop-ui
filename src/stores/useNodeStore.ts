@@ -24,11 +24,11 @@ export const useNodeStore = defineStore('nodeStore', {
     workspaceContainers: [] as Container[],
   }),
   actions: {
-    addContainer(name: string, numCol: number) {
+    addContainer(name: string) {
       this.workspaceContainers.push({
         id: crypto.randomUUID(),
         name,
-        numCol: numCol > 0 ? numCol : 1,
+        numCol: 1,
         nodes: []
       });
     },
