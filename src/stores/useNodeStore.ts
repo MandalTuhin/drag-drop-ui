@@ -12,15 +12,16 @@ export interface Container {
   nodes: Node[];
 }
 
+export const AVAILABLE_NODES: Node[] = [
+  { id: '1', label: 'Input Field' },
+  { id: '2', label: 'Select Box' },
+  { id: '3', label: 'Checkbox' },
+  { id: '4', label: 'Text Area' },
+  { id: '5', label: 'Date Picker' },
+];
+
 export const useNodeStore = defineStore('nodeStore', {
   state: () => ({
-    availableNodes: [
-      { id: '1', label: 'Input Field' },
-      { id: '2', label: 'Select Box' },
-      { id: '3', label: 'Checkbox' },
-      { id: '4', label: 'Text Area' },
-      { id: '5', label: 'Date Picker' },
-    ] as Node[],
     workspaceContainers: [] as Container[],
   }),
   actions: {
