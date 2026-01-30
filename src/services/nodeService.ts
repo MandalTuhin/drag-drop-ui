@@ -13,7 +13,8 @@ export const NodeService = {
     // 1. Map backend entries to our Node interface
     const nodes: Node[] = Object.entries(data).map(([id, vardef]) => ({
       id,
-      label: vardef.label || id // Fallback to id if label is missing
+      label: vardef.label || id, // Fallback to id if label is missing
+      dataField: id
     }))
 
     // 2. Inject frontend-only utility nodes (like the spacer)
@@ -34,12 +35,13 @@ export const NodeService = {
       items: container.nodes
         .filter(node => node.id !== 'spacer') // Usually, spacers aren't saved to DB
         .map(node => {
-          const original = rawVardefs[node.id] || {}
+          const fieldId = node.dataField || node.id
+          const original = rawVardefs[fieldId] || {}
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { label, ...metadata } = original
 
           return {
-            dataField: node.id,
+            dataField: fieldId,
             editorType: original.editorType || 'dxTextBox',
             label: {
               text: node.label
