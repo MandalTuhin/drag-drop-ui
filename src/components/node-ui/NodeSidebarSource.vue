@@ -50,6 +50,7 @@ const handleClone = (node: Node) => {
           :data-id="node.id"
           class="block item cursor-grab active:cursor-grabbing"
         >
+
           <NodeItem :name="node.label" class="hover:border-blue-400 transition-colors" />
         </div>
       </VueDraggable>
@@ -72,8 +73,9 @@ const handleClone = (node: Node) => {
 }
 
 :deep(.ghost-item) {
-  opacity: 0.2 !important;
+  opacity: 1 !important;
   background: #f3f4f6 !important;
+  border: 2px dashed #3b82f6 !important;
   border-radius: 0.5rem;
 }
 </style>
