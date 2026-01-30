@@ -1,22 +1,14 @@
 import { defineStore } from 'pinia';
 import initialNodes from '@/assets/data/nodes.json';
+import { NodeService } from '@/services/nodeService';
+import type { Node, Container, BackendResponse } from '@/types/workspace';
 
-export interface Node {
-  id: string;
-  label: string;
-}
-
-export interface Container {
-  id: string;
-  name: string;
-  numCol: number;
-  nodes: Node[];
-}
+export type { Node, Container, BackendResponse };
 
 export const useNodeStore = defineStore('nodeStore', {
   state: () => ({
     workspaceContainers: [] as Container[],
-    availableNodes: initialNodes as Node[],
+    availableNodes: NodeService.transformBackendNodes(initialNodes as BackendResponse),
   }),
   actions: {
     addContainer(name: string) {

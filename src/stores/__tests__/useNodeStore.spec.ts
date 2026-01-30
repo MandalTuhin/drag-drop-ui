@@ -18,7 +18,7 @@ describe('NodeStore', () => {
       const store = useNodeStore()
       store.addContainer('Test Panel')
       expect(store.workspaceContainers.length).toBe(1)
-      expect(store.workspaceContainers[0].name).toBe('Test Panel')
+      expect(store.workspaceContainers[0]?.name).toBe('Test Panel')
     })
 
     it('validates unique container names (case-insensitive)', () => {
@@ -33,7 +33,8 @@ describe('NodeStore', () => {
     it('removes a container and rescues standard nodes', () => {
       const store = useNodeStore()
       store.addContainer('Cleanup Panel')
-      const containerId = store.workspaceContainers[0].id
+      const containerId = store.workspaceContainers[0]?.id
+      if (!containerId) throw new Error('Container ID not found')
       
       // Manually add nodes to the container
       const standardNode = { id: 'test-1', label: 'Input Field' }
@@ -61,24 +62,26 @@ describe('NodeStore', () => {
     it('updates container nodes', () => {
       const store = useNodeStore()
       store.addContainer('Update Test')
-      const containerId = store.workspaceContainers[0].id
+      const containerId = store.workspaceContainers[0]?.id
+      if (!containerId) throw new Error('Container ID not found')
       const newNodes = [{ id: '99', label: 'Dynamic Node' }]
       
       store.updateContainerNodes(containerId, newNodes)
-      expect(store.workspaceContainers[0].nodes).toEqual(newNodes)
+      expect(store.workspaceContainers[0]?.nodes).toEqual(newNodes)
     })
 
     it('updates container column count', () => {
       const store = useNodeStore()
       store.addContainer('Col Test')
-      const containerId = store.workspaceContainers[0].id
+      const containerId = store.workspaceContainers[0]?.id
+      if (!containerId) throw new Error('Container ID not found')
       
       store.updateContainerNumCol(containerId, 4)
-      expect(store.workspaceContainers[0].numCol).toBe(4)
+      expect(store.workspaceContainers[0]?.numCol).toBe(4)
       
       // Should not go below 1
       store.updateContainerNumCol(containerId, 0)
-      expect(store.workspaceContainers[0].numCol).toBe(1)
+      expect(store.workspaceContainers[0]?.numCol).toBe(1)
     })
   })
 })
