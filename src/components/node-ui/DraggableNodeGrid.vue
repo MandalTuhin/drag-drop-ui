@@ -16,6 +16,9 @@
       :move="onMove"
       @end="onEnd"
       @drag-leave="onDragLeave"
+      :force-fallback="true"
+      fallback-class="dragging-card"
+      ghost-class="ghost-item"
       class="flex flex-wrap min-h-[120px] content-start sortable-container transition-all duration-300 ease-in-out"
     >
       <div
@@ -23,6 +26,7 @@
         :key="node.id"
         class="item-wrapper p-2 relative"
         :style="{ width: itemWidth }"
+        :data-label="node.label"
       >
         <!-- Individual item insertion indicator -->
         <div

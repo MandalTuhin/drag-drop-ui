@@ -11,6 +11,12 @@ const checkPull = (to: any, from: any, dragEl: HTMLElement) => {
   return dragEl.dataset.id === 'spacer' ? 'clone' : true;
 };
 
+// Determines if an item can be dropped back into the sidebar
+const checkPut = (to: any, from: any, dragEl: HTMLElement) => {
+  // Prevent cloned spacer nodes from being put back
+  return dragEl.dataset.label !== '[ || ]';
+};
+
 // Generates a new ID for cloned items
 const handleClone = (node: Node) => {
   return {
@@ -31,7 +37,7 @@ const handleClone = (node: Node) => {
       <VueDraggable
         v-model="store.availableNodes"
         class="flex flex-col gap-2 h-full"
-        :group="{ name: 'nodeGroup', pull: checkPull, put: true }"
+        :group="{ name: 'nodeGroup', pull: checkPull, put: checkPut }"
         :clone="handleClone"
         :animation="150"
       >
