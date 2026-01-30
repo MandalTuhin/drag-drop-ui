@@ -39,7 +39,10 @@ const handleClone = (node: Node) => {
         class="flex flex-col gap-2 h-full"
         :group="{ name: 'nodeGroup', pull: checkPull, put: checkPut }"
         :clone="handleClone"
-        :animation="150"
+        :animation="300"
+        :force-fallback="true"
+        fallback-class="dragging-card"
+        ghost-class="ghost-item"
       >
         <div
           v-for="node in store.availableNodes"
@@ -53,3 +56,24 @@ const handleClone = (node: Node) => {
     </div>
   </aside>
 </template>
+
+<style scoped>
+:deep(.dragging-card) {
+  opacity: 1 !important;
+  cursor: grabbing !important;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Apply the visual effects to the CONTENT, not the wrapper moving around */
+:deep(.dragging-card > *) {
+  transform: rotate(3deg) !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2) !important;
+}
+
+:deep(.ghost-item) {
+  opacity: 0.2 !important;
+  background: #f3f4f6 !important;
+  border-radius: 0.5rem;
+}
+</style>

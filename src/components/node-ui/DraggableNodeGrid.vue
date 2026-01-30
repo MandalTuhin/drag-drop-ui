@@ -10,9 +10,7 @@
     <VueDraggable
       v-model="nodes"
       group="nodeGroup"
-      ghost-class="opacity-30"
-      chosen-class="opacity-50"
-      :animation="250"
+      :animation="300"
       :move="onMove"
       @end="onEnd"
       @drag-leave="onDragLeave"
@@ -84,6 +82,27 @@ const {
 <style scoped>
 .sortable-container {
   transition: all 0.3s ease;
+}
+
+:deep(.dragging-card) {
+  opacity: 1 !important;
+  cursor: grabbing !important;
+  z-index: 9999;
+  pointer-events: none;
+  /* Fix size during drag: matches the internal NodeItem sizing */
+  width: 250px !important; 
+}
+
+/* Apply effects to the inner element to avoid conflicting with SortableJS transforms */
+:deep(.dragging-card > *) {
+  transform: rotate(3deg) !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2) !important;
+}
+
+:deep(.ghost-item) {
+  opacity: 0.1 !important;
+  background: #f3f4f6 !important;
+  border-radius: 0.5rem;
 }
 
 :deep(.sortable-fallback) {
