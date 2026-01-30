@@ -17,7 +17,7 @@ const handleAddContainer = () => {
     errorMessage.value = 'A container with this name already exists';
     return;
   }
-  
+
   store.addContainer(name);
   newContainerName.value = '';
   errorMessage.value = '';
@@ -48,7 +48,7 @@ watch(newContainerName, () => {
     </div>
     <button
       @click="handleAddContainer"
-      class="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors h-9.5"
+      class="mt-6 bg-blue-600 cursor-pointer text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors h-9.5"
     >
       Add Sub-Container
     </button>
