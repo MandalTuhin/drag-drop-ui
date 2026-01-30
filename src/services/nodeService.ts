@@ -1,4 +1,4 @@
-import type { BackendResponse, Node } from '@/types/workspace'
+import type { BackendResponse, Node, Container } from '@/types/workspace'
 
 /**
  * NodeService handles all data transformations and API interactions
@@ -6,7 +6,7 @@ import type { BackendResponse, Node } from '@/types/workspace'
  */
 export const NodeService = {
   /**
-   * Transforms the raw Vardef response from the backend into
+   * Transforms the raw Vardef response from the backend into 
    * a format the frontend workspace can use.
    */
   transformBackendNodes(data: BackendResponse): Node[] {
@@ -23,11 +23,38 @@ export const NodeService = {
   },
 
   /**
+   * Transforms the workspace state back into the specific format
+   * required by the backend for saving.
+   */
+  exportLayout(containers: Container[], rawVardefs: BackendResponse) {
+    return containers.map(container => ({
+      name: container.name,
+      itemType: 'group',
+      colCount: container.numCol,
+      items: container.nodes
+        .filter(node => node.id !== 'spacer') // Usually, spacers aren't saved to DB
+        .map(node => {
+          const original = rawVardefs[node.id] || {}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { label, ...metadata } = original
+
+          return {
+            dataField: node.id,
+            editorType: original.editorType || 'dxTextBox',
+            label: {
+              text: node.label
+            },
+            ...metadata // Include any other original fields like status, required, etc.
+          }
+        })
+    }))
+  },
+
+  /**
    * Identifies if a node is a spacer (clonable utility node)
    */
   isSpacer(node: Node): boolean {
     return node.id === 'spacer' || node.label === '[ || ]'
   }
 }
-
 // will have to look forward.

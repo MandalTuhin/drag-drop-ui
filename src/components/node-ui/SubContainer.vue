@@ -25,7 +25,7 @@ const updateCols = (value: number) => {
 
 <template>
   <div
-    class="bg-white rounded-xl border-2 transition-all duration-300 shadow-sm flex flex-col min-h-[160px] border-gray-200"
+    class="bg-white rounded-xl border-2 transition-all duration-300 shadow-sm flex flex-col min-h-40 border-gray-200"
   >
     <ContainerHeader
       :name="container.name"

@@ -5,6 +5,8 @@ import { VueDraggable } from 'vue-draggable-plus';
 import AddContainerForm from './AddContainerForm.vue';
 import DragIndicator from './DragIndicator.vue';
 import SubContainer from './SubContainer.vue';
+import { SaveIcon } from 'lucide-vue-next';
+
 
 const store = useNodeStore();
 const indicatorIndex = ref<number | null>(null);
@@ -31,11 +33,27 @@ const onMove = (e: DraggableMoveEvent) => {
 const onEnd = () => {
   indicatorIndex.value = null;
 };
+
+const handleSave = () => {
+  const layout = store.getLayoutJson();
+  console.log('Form Layout Export:', JSON.stringify(layout, null, 2));
+  // alert('Layout exported to console!');
+};
 </script>
 
 <template>
   <div class="flex-1 p-6 bg-gray-50 min-h-screen">
-    <AddContainerForm />
+    <div class="flex justify-between items-start">
+      <AddContainerForm />
+      <button
+        @click="handleSave"
+        class="bg-green-600 text-white px-6 py-2 rounded shadow hover:bg-green-700 transition-colors flex items-center gap-2 mt-4"
+      >
+      <SaveIcon />
+        Save Layout
+      </button>
+    </div>
+
     <VueDraggable
       v-model="store.workspaceContainers"
       class="flex flex-col gap-4 relative"

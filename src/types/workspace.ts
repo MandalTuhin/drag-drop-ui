@@ -16,7 +16,7 @@ export interface Container {
   nodes: Node[]
 }
 
-/** 
+/**
  * Represents the raw data format from the Backend (Vardefs)
  */
 export interface BackendVardef {
@@ -31,3 +31,4 @@ export interface BackendVardef {
  * The dictionary-style response received from the API
  */
 export type BackendResponse = Record<string, BackendVardef>
+

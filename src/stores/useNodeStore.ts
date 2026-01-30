@@ -49,6 +49,9 @@ export const useNodeStore = defineStore('nodeStore', {
     isContainerNameUnique(name: string): boolean {
       const normalizedName = name.trim().toLowerCase();
       return !this.workspaceContainers.some(c => c.name.toLowerCase() === normalizedName);
+    },
+    getLayoutJson() {
+      return NodeService.exportLayout(this.workspaceContainers, initialNodes as BackendResponse);
     }
   }
 });
