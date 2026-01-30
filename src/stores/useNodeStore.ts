@@ -46,7 +46,17 @@ export const useNodeStore = defineStore('nodeStore', {
       }
     },
     removeContainer(containerId: string) {
-      this.workspaceContainers = this.workspaceContainers.filter(c => c.id !== containerId);
+      const containerIndex = this.workspaceContainers.findIndex(c => c.id === containerId);
+      if (containerIndex !== -1) {
+        const container = this.workspaceContainers[containerIndex];
+        
+        // Rescue standard nodes (non-spacers) and return them to the sidebar
+        const nodesToReturn = container.nodes.filter(n => n.label !== '[ || ]');
+        this.availableNodes.push(...nodesToReturn);
+
+        // Remove the container
+        this.workspaceContainers.splice(containerIndex, 1);
+      }
     },
     isContainerNameUnique(name: string): boolean {
       const normalizedName = name.trim().toLowerCase();
