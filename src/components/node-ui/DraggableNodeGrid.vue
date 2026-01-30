@@ -17,7 +17,7 @@
       :force-fallback="true"
       fallback-class="dragging-card"
       ghost-class="ghost-item"
-      class="flex flex-wrap min-h-[120px] content-start sortable-container transition-all duration-300 ease-in-out"
+      class="flex flex-wrap min-h-30 content-start sortable-container transition-all duration-300 ease-in-out"
     >
       <div
         v-for="(node, index) in nodes"
@@ -90,7 +90,7 @@ const {
   z-index: 9999;
   pointer-events: none;
   /* Fix size during drag: matches the internal NodeItem sizing */
-  width: 250px !important; 
+  width: 250px !important;
 }
 
 /* Apply effects to the inner element to avoid conflicting with SortableJS transforms */
