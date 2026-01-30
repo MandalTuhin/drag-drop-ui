@@ -100,7 +100,7 @@ const {
 }
 
 :deep(.ghost-item) {
-  opacity: 1 !important;
+  opacity: 0.3 !important;
   background: #eff6ff !important;
   border: 2px dashed #3b82f6 !important;
   border-radius: 0.5rem;
