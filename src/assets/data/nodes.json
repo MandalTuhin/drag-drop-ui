@@ -1,0 +1,8 @@
+[
+  { "id": "1", "label": "Input Field" },
+  { "id": "2", "label": "Select Box" },
+  { "id": "3", "label": "Checkbox" },
+  { "id": "4", "label": "Text Area" },
+  { "id": "5", "label": "Date Picker" },
+  { "id": "spacer", "label": "[ || ]" }
+]

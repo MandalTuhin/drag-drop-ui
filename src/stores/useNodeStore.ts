@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import initialNodes from '@/assets/data/nodes.json';
 
 export interface Node {
   id: string;
@@ -15,14 +16,7 @@ export interface Container {
 export const useNodeStore = defineStore('nodeStore', {
   state: () => ({
     workspaceContainers: [] as Container[],
-    availableNodes: [
-      { id: '1', label: 'Input Field' },
-      { id: '2', label: 'Select Box' },
-      { id: '3', label: 'Checkbox' },
-      { id: '4', label: 'Text Area' },
-      { id: '5', label: 'Date Picker' },
-      { id: 'spacer', label: '[ || ]' },
-    ] as Node[],
+    availableNodes: initialNodes as Node[],
   }),
   actions: {
     addContainer(name: string) {
