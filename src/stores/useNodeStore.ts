@@ -50,12 +50,14 @@ export const useNodeStore = defineStore('nodeStore', {
       if (containerIndex !== -1) {
         const container = this.workspaceContainers[containerIndex];
         
-        // Rescue standard nodes (non-spacers) and return them to the sidebar
-        const nodesToReturn = container.nodes.filter(n => n.label !== '[ || ]');
-        this.availableNodes.push(...nodesToReturn);
+        if (container) {
+          // Rescue standard nodes (non-spacers) and return them to the sidebar
+          const nodesToReturn = container.nodes.filter(n => n.label !== '[ || ]');
+          this.availableNodes.push(...nodesToReturn);
 
-        // Remove the container
-        this.workspaceContainers.splice(containerIndex, 1);
+          // Remove the container
+          this.workspaceContainers.splice(containerIndex, 1);
+        }
       }
     },
     isContainerNameUnique(name: string): boolean {
