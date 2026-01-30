@@ -6,7 +6,7 @@ import type { BackendResponse, Node } from '@/types/workspace'
  */
 export const NodeService = {
   /**
-   * Transforms the raw Vardef response from the backend into 
+   * Transforms the raw Vardef response from the backend into
    * a format the frontend workspace can use.
    */
   transformBackendNodes(data: BackendResponse): Node[] {
@@ -20,5 +20,14 @@ export const NodeService = {
     nodes.push({ id: 'spacer', label: '[ || ]' })
 
     return nodes
+  },
+
+  /**
+   * Identifies if a node is a spacer (clonable utility node)
+   */
+  isSpacer(node: Node): boolean {
+    return node.id === 'spacer' || node.label === '[ || ]'
   }
 }
+
+// will have to look forward.

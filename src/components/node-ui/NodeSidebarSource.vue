@@ -2,7 +2,7 @@
 import { useNodeStore, type Node } from '@/stores/useNodeStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import NodeItem from './NodeItem.vue';
-import type { SortableEvent } from 'sortablejs';
+import { NodeService } from '@/services/nodeService';
 
 const store = useNodeStore();
 
@@ -11,10 +11,18 @@ const checkPull = (to: any, from: any, dragEl: HTMLElement) => {
   return dragEl.dataset.id === 'spacer' ? 'clone' : true;
 };
 
-// Determines if an item can be dropped back into the sidebar
-const checkPut = (to: any, from: any, dragEl: HTMLElement) => {
-  // Prevent cloned spacer nodes from being put back
-  return dragEl.dataset.label !== '[ || ]';
+// We allow all items to be dropped back (put: true).
+// If it's a spacer, we'll handle its deletion in the onAdd event.
+const checkPut = () => true;
+
+// When an item is dropped into the sidebar
+const onAdd = (e: any) => {
+  const item = e.data; // The node object
+  if (item && NodeService.isSpacer(item)) {
+    // It's a spacer! Remove it from the sidebar so it doesn't pollute the list.
+    // Since it was 'moved' from the sub-container, it's already gone from there.
+    store.availableNodes = store.availableNodes.filter(n => n.id !== item.id);
+  }
 };
 
 // Generates a new ID for cloned items
@@ -43,6 +51,7 @@ const handleClone = (node: Node) => {
         :force-fallback="true"
         fallback-class="dragging-card"
         ghost-class="ghost-item"
+        @add="onAdd"
       >
         <div
           v-for="node in store.availableNodes"
