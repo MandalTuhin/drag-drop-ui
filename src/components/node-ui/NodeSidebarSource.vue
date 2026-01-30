@@ -2,8 +2,22 @@
 import { useNodeStore, type Node } from '@/stores/useNodeStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import NodeItem from './NodeItem.vue';
+import type { SortableEvent } from 'sortablejs';
 
 const store = useNodeStore();
+
+// Determines if the item should be cloned or moved
+const checkPull = (to: any, from: any, dragEl: HTMLElement) => {
+  return dragEl.dataset.id === 'spacer' ? 'clone' : true;
+};
+
+// Generates a new ID for cloned items
+const handleClone = (node: Node) => {
+  return {
+    ...node,
+    id: crypto.randomUUID(),
+  };
+};
 </script>
 
 <template>
@@ -17,12 +31,14 @@ const store = useNodeStore();
       <VueDraggable
         v-model="store.availableNodes"
         class="flex flex-col gap-2 h-full"
-        :group="{ name: 'nodeGroup', pull: true, put: true }"
+        :group="{ name: 'nodeGroup', pull: checkPull, put: true }"
+        :clone="handleClone"
         :animation="150"
       >
         <div
           v-for="node in store.availableNodes"
           :key="node.id"
+          :data-id="node.id"
           class="block item cursor-grab active:cursor-grabbing"
         >
           <NodeItem :name="node.label" class="hover:border-blue-400 transition-colors" />
