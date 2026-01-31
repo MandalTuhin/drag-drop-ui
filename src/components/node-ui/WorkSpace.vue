@@ -35,9 +35,24 @@ const onEnd = () => {
 };
 
 const handleSave = () => {
+  // 1. Persist state to LocalStorage (Restores on reload)
+  store.saveLayout();
+
+  // 2. Export and Download JSON (Business Logic)
   const layout = store.getLayoutJson();
-  console.log('Form Layout Export:', JSON.stringify(layout, null, 2));
-  // alert('Layout exported to console!');
+  const jsonString = JSON.stringify(layout, null, 2);
+  
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'layout.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  console.log('Form Layout Export:', layout);
 };
 </script>
 
