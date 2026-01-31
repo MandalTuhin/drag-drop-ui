@@ -57,7 +57,7 @@ const handleSave = () => {
 </script>
 
 <template>
-  <div class="flex-1 p-6 bg-gray-50 min-h-screen">
+  <div class="flex-1 p-6 bg-gray-50 h-full overflow-y-auto">
     <div class="flex justify-between items-start">
       <AddContainerForm />
       <button
