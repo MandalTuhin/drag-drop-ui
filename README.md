@@ -1,53 +1,69 @@
-# vue-drag-drop
+# Vue Drag & Drop Workspace
 
-This template should help get you started developing with Vue 3 in Vite.
+A powerful visual interface for building and managing nested layouts and node structures. This application allows users to drag components from a sidebar, organize them into containers, and export the final structure as JSON.
 
-## Recommended IDE Setup
+## 🚀 Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Drag & Drop Interface**: Intuitive drag-and-drop system powered by `vue-draggable-plus`.
+- **Nested Structures**: Create and manage deep hierarchies with nested containers.
+- **Node Sidebar**: A collection of draggable source nodes ready to be placed in the workspace.
+- **Workspace Management**: Organize nodes, reorder items, and manage complex layouts visually.
+- **Trash Zone**: Easily remove items by dragging them to the trash area.
+- **Persistence & Export**:
+  - Automatically saves layout to LocalStorage.
+  - Export layout configuration as a JSON file.
+- **Modern UI**: Clean, responsive design built with Tailwind CSS and Lucide Icons.
 
-## Recommended Browser Setup
+## 🛠️ Tech Stack
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- **Framework**: [Vue 3](https://vuejs.org/) (Composition API)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **State Management**: [Pinia](https://pinia.vuejs.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Drag & Drop**: [vue-draggable-plus](https://vue-draggable-plus.pages.dev/)
+- **Icons**: [Lucide Vue Next](https://lucide.dev/)
+- **Testing**: [Vitest](https://vitest.dev/)
 
-## Type Support for `.vue` Imports in TS
+## 📦 Project Setup
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### Prerequisites
 
-## Customize configuration
+- Node.js (v20.19.0 or higher recommended)
+- npm
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+### Installation
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Development
+
+Start the development server with hot-reload:
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Production Build
+
+Type-check and build for production:
 
 ```sh
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Testing
+
+Run unit tests:
 
 ```sh
 npm run test:unit
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Linting & Formatting
+
+Lint and fix files:
 
 ```sh
 npm run lint
