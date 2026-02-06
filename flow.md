@@ -1,5 +1,7 @@
 # Vue Drag-Drop Application Workflow
 
+// I am making some changes here, so I can see if I can commit the changes.
+
 This document outlines the architecture and workflows of the Vue 3 + Pinia drag-and-drop system.
 
 ## 1. System Architecture
